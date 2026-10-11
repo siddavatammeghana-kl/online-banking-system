@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecureBank | Online Banking</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="toast"></div>
+<section id="authScreen" class="auth-wrap">
+  <div class="auth-brand"><div class="logo">S</div><div><h1>SecureBank</h1><p>Banking made simple.</p></div></div>
+  <div class="auth-card">
+    <div class="tabs"><button class="tab active" onclick="showAuth('login')">Login</button><button class="tab" onclick="showAuth('register')">Create account</button></div>
+    <form id="loginForm" onsubmit="login(event)">
+      <h2>Welcome back</h2><p class="muted">Login to access your account</p>
+      <label>Email address</label><input id="loginEmail" type="email" placeholder="you@example.com" required>
+      <label>Password</label><input id="loginPassword" type="password" placeholder="Enter password" required>
+      <button class="primary full">Login securely</button>
+      <p class="muted tiny">Demo banking application. Use your registered demo account.</p>
+    </form>
+    <form id="registerForm" class="hidden" onsubmit="register(event)">
+      <h2>Create your account</h2><p class="muted">Get started with SecureBank</p>
+      <label>Full name</label><input id="regName" required placeholder="Your full name">
+      <label>Email address</label><input id="regEmail" type="email" required placeholder="you@example.com">
+      <label>Phone number</label><input id="regPhone" placeholder="Mobile number">
+      <label>Password (minimum 6 characters)</label><input id="regPassword" type="password" minlength="6" required placeholder="Create password">
+      <button class="primary full">Create account</button>
+    </form>
+  </div>
+  <p class="footer-note">🔒 Protected demo banking environment</p>
+</section>
+
+<div id="app" class="hidden">
+  <aside class="sidebar">
+    <div class="side-brand"><div class="logo">S</div><span>SecureBank</span></div>
+    <div class="nav-label">MENU</div>
+    <button class="nav active" data-page="dashboard" onclick="navigate('dashboard')">▦ &nbsp; Overview</button>
+    <button class="nav" data-page="accounts" onclick="navigate('accounts')">▣ &nbsp; My accounts</button>
+    <button class="nav" data-page="transfer" onclick="navigate('transfer')">⇄ &nbsp; Transfer money</button>
+    <button class="nav" data-page="transactions" onclick="navigate('transactions')">↗ &nbsp; Transactions</button>
+    <button class="nav" data-page="bills" onclick="navigate('bills')">▤ &nbsp; Bill payments</button>
+    <button class="nav" data-page="loans" onclick="navigate('loans')">▧ &nbsp; Loans</button>
+    <button class="nav" data-page="recurring" onclick="navigate('recurring')">⟳ &nbsp; Recurring payments</button>
+    <div class="sidebar-bottom"><div class="user-mini"><div class="avatar" id="sideAvatar">U</div><div><b id="sideName">User</b><small>Customer</small></div></div><button class="logout" onclick="logout()">↪ &nbsp; Logout</button></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div><span class="muted">Pages / </span><b id="pageTitle">Overview</b></div><div class="top-user"><span class="status-dot"></span><span id="topName">User</span><div class="avatar small-avatar" id="topAvatar">U</div></div></header>
+    <div class="content">
+      <section id="dashboardPage" class="page">
+        <div class="welcome"><div><p class="eyebrow">YOUR FINANCIAL SPACE</p><h1>Good day, <span id="welcomeName">there</span> 👋</h1><p class="muted">Here is what's happening with your money today.</p></div><div class="date-pill" id="todayDate"></div></div>
+        <div class="stats">
+          <div class="stat-card dark-stat"><div class="stat-top"><span>Total balance</span><span>◉</span></div><h2 id="totalBalance">₹0.00</h2><small>Across all your accounts</small></div>
+          <div class="stat-card"><div class="stat-top"><span>Bank accounts</span><span class="stat-icon">▣</span></div><h2 id="accountCount">0</h2><small>Active accounts</small></div>
+          <div class="stat-card"><div class="stat-top"><span>Recent activity</span><span class="stat-icon">↗</span></div><h2 id="activityCount">0</h2><small>Latest transactions shown</small></div>
+        </div>
+        <div class="section-head"><div><h2>Quick actions</h2><p class="muted">Manage your money in a few clicks</p></div></div>
+        <div class="quick-grid">
+          <button onclick="navigate('transfer')" class="quick-card"><span class="quick-icon purple">⇄</span><b>Transfer money</b><small>Send money securely</small></button>
+          <button onclick="navigate('bills')" class="quick-card"><span class="quick-icon orange">▤</span><b>Pay a bill</b><small>Pay utilities and more</small></button>
+          <button onclick="navigate('transactions')" class="quick-card"><span class="quick-icon green">↗</span><b>Transactions</b><small>View account activity</small></button>
+          <button onclick="navigate('loans')" class="quick-card"><span class="quick-icon blue">▧</span><b>Apply for loan</b><small>Submit an application</small></button>
+        </div>
+        <div class="section-head"><div><h2>Recent transactions</h2><p class="muted">Your latest account activity</p></div><button class="text-btn" onclick="navigate('transactions')">View all →</button></div>
+        <div class="table-card"><div id="recentTable" class="empty">No transactions yet. Try a demo transfer or bill payment.</div></div>
+      </section>
+
+      <section id="accountsPage" class="page hidden"><div class="page-heading"><h1>My accounts</h1><p class="muted">Your bank account details and balances.</p></div><div id="accountsList" class="account-grid"></div></section>
+
+      <section id="transferPage" class="page hidden"><div class="page-heading"><h1>Transfer money</h1><p class="muted">Send money to another SecureBank demo account.</p></div><div class="form-card"><form onsubmit="transfer(event)"><label>From account</label><select id="transferAccount" required></select><label>Receiver account number</label><input id="receiverAccount" placeholder="Enter receiver account number" required><label>Amount (₹)</label><input id="transferAmount" type="number" min="1" step="0.01" placeholder="0.00" required><label>Note (optional)</label><input id="transferNote" placeholder="Purpose of transfer"><button class="primary">Review & transfer</button></form><div class="hint">Tip: Register a second demo user to create a receiver account.</div></div></section>
+
+      <section id="transactionsPage" class="page hidden"><div class="page-heading"><h1>Transactions</h1><p class="muted">Complete history of your recent activity.</p></div><div class="table-card" id="transactionsTable"></div></section>
+
+      <section id="billsPage" class="page hidden"><div class="page-heading"><h1>Bill payments</h1><p class="muted">Pay your regular utility bills.</p></div><div class="form-card"><form onsubmit="payBill(event)"><label>Pay from account</label><select id="billAccount" required></select><label>Bill type</label><select id="billType"><option>Electricity</option><option>Water</option><option>Mobile recharge</option><option>Internet</option><option>Gas</option></select><label>Consumer / reference number</label><input id="consumerNumber" placeholder="Enter consumer number"><label>Amount (₹)</label><input id="billAmount" type="number" min="1" step="0.01" required placeholder="0.00"><button class="primary">Pay bill</button></form></div><div class="section-head"><h2>Payment history</h2></div><div class="table-card" id="billsTable"></div></section>
+
+      <section id="loansPage" class="page hidden"><div class="page-heading"><h1>Loan applications</h1><p class="muted">Apply for a demo loan and track its status.</p></div><div class="form-card"><form onsubmit="applyLoan(event)"><label>Loan type</label><select id="loanType"><option>Personal Loan</option><option>Education Loan</option><option>Home Loan</option><option>Vehicle Loan</option></select><label>Loan amount (₹)</label><input id="loanAmount" type="number" min="1" required placeholder="Enter amount"><label>Purpose</label><textarea id="loanPurpose" rows="3" placeholder="Why do you need this loan?"></textarea><button class="primary">Submit application</button></form></div><div class="section-head"><h2>Your applications</h2></div><div class="table-card" id="loansTable"></div></section>
+
+      <section id="recurringPage" class="page hidden"><div class="page-heading"><h1>Recurring payments</h1><p class="muted">Set up a schedule for regular payments.</p></div><div class="form-card"><form onsubmit="addRecurring(event)"><label>Pay from account</label><select id="recAccount" required></select><label>Payee / service name</label><input id="recPayee" required placeholder="e.g. Internet provider"><label>Amount (₹)</label><input id="recAmount" type="number" min="1" step="0.01" required placeholder="0.00"><label>Frequency</label><select id="recFrequency"><option>Monthly</option><option>Weekly</option><option>Quarterly</option></select><label>Next payment date</label><input id="recDate" type="date" required><button class="primary">Save schedule</button></form><div class="hint">Demo only: schedule is saved, but money is not automatically debited.</div></div><div class="section-head"><h2>Saved schedules</h2></div><div class="table-card" id="recurringTable"></div></section>
+    </div>
+  </main>
+</div>
+<script src="app.js"></script>
+</body></html>
